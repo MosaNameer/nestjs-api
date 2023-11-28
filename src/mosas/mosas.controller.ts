@@ -1,40 +1,37 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query } from '@nestjs/common';
 import { CreateMosaDto } from './dto/create-mosa.dto';
 import { UpdateMosaDto } from './dto/update-mosa.dto';
+import { MosasService } from './mosas.service';
 
 @Controller('mosas')
 export class MosasController {
+    constructor(private readonly mosasService: MosasService){}
     @Get()
-    getMosas(@Query('type') type: string){
-        return [{ type }];
+    getMosas(@Query('weapon') weapon: 'sword' | 'gun' | 'knife'){
+        return this.mosasService.getMosas(weapon);
     }
 
     @Get(':id')
     getOneMosa(@Param('id') id: string){
-        return {
-            message: `Mosa ${id}`
-        };
+        try{
+        return this.mosasService.getMosa(+id);
+        }catch(err){
+            throw new NotFoundException();
+        }
     }
 
     @Post()
     createMosa(@Body() createMosaDto: CreateMosaDto){
-        return {
-            name: createMosaDto.name,
-        };
+        return this.mosasService.createMosa(createMosaDto);
     }
 
     @Put(':id')
     updateMosa(@Param('id') id: string, @Body() updateMosaDto: UpdateMosaDto){
-        return {
-            id,
-            name: updateMosaDto.name,
-        };
+        return this.mosasService.updateMosa(+id, updateMosaDto);
     }
 
     @Delete(':id')
     deleteMosa(@Param('id') id: string){
-        return {
-            message: `Mosa ${id}`
-        };
+        return this.mosasService.removeMosa(+id);
     }
 }
