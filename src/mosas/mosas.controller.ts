@@ -1,4 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { CreateMosaDto } from './dto/create-mosa.dto';
+import { UpdateMosaDto } from './dto/update-mosa.dto';
 
 @Controller('mosas')
 export class MosasController {
@@ -15,14 +17,17 @@ export class MosasController {
     }
 
     @Post()
-    createMosa(@Body() createMosaDto){
-        return {};
+    createMosa(@Body() createMosaDto: CreateMosaDto){
+        return {
+            name: createMosaDto.name,
+        };
     }
 
     @Put(':id')
-    updateMosa(@Param('id') id: string){
+    updateMosa(@Param('id') id: string, @Body() updateMosaDto: UpdateMosaDto){
         return {
-            message: `Mosa ${id}`
+            id,
+            name: updateMosaDto.name,
         };
     }
 
